@@ -18,6 +18,11 @@ def home():
 @cross_origin()
 def comment():
     comment = request.json
+
+    # If the message is a fake one, just return immediately
+    if (comment['Onion']): return ('', 204)
+
+    # Otherwise, handle the message properly
     date = datetime.datetime.now()
     newComment = { 'date_posted' : date.strftime("%x"),
                 'time_posted' : date.strftime("%X"),
