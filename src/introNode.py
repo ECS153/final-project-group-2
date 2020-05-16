@@ -16,4 +16,4 @@ def comment():
 
 
 if (__name__ == "__main__"):
-    app.run(debug=True, port=10000)
+    app.run(debug=True, port=10000) # ssl_context="adhoc" to add TLS
