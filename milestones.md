@@ -5,10 +5,10 @@
 
 ## Contribution
 ### Anthony Yang
-* Done:
+* Done: Made important decisions on how to implement the node. Started writing API for the node. 
 
 * TODO:
-For the upcoming week, I would start implementing the node structure. So far I am not stuck on any particular issue. 
+For the upcoming week, I will continue working on the node. At this point, I am stuck on implementing the node in a single thread point of view. (We have to decide how to hide data within the noise.)
 [Link to node design doc](https://docs.google.com/document/d/1dbC9gJvCgyTVsaopRKNBOPJZnjFKXFHqV19T7Wt-1sw/edit?usp=sharing)
 
 ### Scott Lorentzen
