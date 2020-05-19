@@ -26,7 +26,7 @@
             <div class="media-body">
               <form class="">
                 <textarea id="CommentTextBox" cols="48" rows="4"></textarea> <br>
-                <input id="PostCommentButton" type="submit" value="Post New Comment" onClick="PostComment()"
+                <input id="PostCommentButton" type="submit" value="Post New Comment" onClick="BufferComment()"
               </form>
             </div>
           </article>
@@ -41,18 +41,80 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
     <script type="text/javascript">
-      function PostComment() {
+
+      var interval = 1000; // This is the time between messages
+      var requestPending = false;
+      var commentBuffer = [];
+      var intervalTimer;
+      var MIN_STRING_LENGTH = 5;
+      var MAX_STRING_LENGTH = 250;
+      // found at https://gist.github.com/6174/6062387 for basic random string gereration
+      const chars = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"];
+
+
+      // send a message at a continous rate
+      intervalTimer = setInterval(function() {
+
+        // if a message is still in transit, don't send a new message
+        if (requestPending) return;
+
+        // if there are any real user posts buffered, send
+        // those instead of sending noise
+        if (commentBuffer.length != 0) {
+          PostComment()
+        }
+        else { // else send a fake message
+          SendOnion();
+        }
+
+        requestPending = true;
+      }, interval);
+
+      // Send a fake message
+      //
+      // NOTE: need to randomize the message in both characters and length
+      function SendOnion() {
+
+        var randLength = Math.floor(Math.random() * (MAX_STRING_LENGTH - MIN_STRING_LENGTH) + MIN_STRING_LENGTH);
+        // found at https://gist.github.com/6174/6062387 for basic random string gereration
+        var randString = [...Array(randLength)].map(i=>chars[Math.random()*chars.length|0]).join``;
+
+        var postData = JSON.stringify({'Onion': true, 'Content': randString})
+        var request = $.ajax({
+          type: 'POST',
+          url: 'http://localhost:10000/intro',
+          data: postData,
+          dataType: 'json',
+          contentType: 'application/json'
+        });
+        request.done(function() {requestPending = false;})
+      }
+
+      // When the user tries to post a comment, the comment
+      // is buffered until the next sending interval
+      function BufferComment() {
+
         var content = document.getElementById("CommentTextBox").value;
         if (content.replace(/\s/g, '').length) {
-          var postData = JSON.stringify({'Content': content })
-          $.ajax({
-            type: 'POST',
-            url: 'http://localhost:10000/intro',
-            data: postData,
-            dataType: 'json',
-            contentType: 'application/json'
-          });
+          var postData = JSON.stringify({'Onion': false, 'Content': content })
+          commentBuffer.push(postData);
         }
+
+      }
+
+      // Post the next most recent buffered comment
+      //    This is just in case the user rapidly sends multiple comments
+      //    (We should probably create a pop-up or something to prevent
+      //      the user from doing this)
+      function PostComment() {
+        var request = $.ajax({
+          type: 'POST',
+          url: 'http://localhost:10000/intro',
+          data: commentBuffer.shift(),
+          dataType: 'json',
+          contentType: 'application/json'
+        });
+        request.done(function() {requestPending = false;})
       }
     </script>
 
