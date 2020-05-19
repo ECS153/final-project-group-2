@@ -1,3 +1,32 @@
+# Milestone 2
+
+## Video
+[Link to video](https://www.youtube.com/watch?v=o31LfDrhq-c&feature=youtu.be)
+
+## Contribution
+### Anthony Yang
+* Done:
+
+* TODO:
+For the upcoming week, I would start implementing the node structure. So far I am not stuck on any particular issue. 
+[Link to node design doc](https://docs.google.com/document/d/1dbC9gJvCgyTVsaopRKNBOPJZnjFKXFHqV19T7Wt-1sw/edit?usp=sharing)
+
+### Scott Lorentzen
+* Done: 
+Worked on the follw design doc, which outlines how the CMIYC blog should works. Started a prototypr of a blog website with Flask. 
+* TODO:
+For the next week, I will work on implementaion and research on what python module can be helpfull.  
+[Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/1)  
+[Link to follow design doc](https://drive.google.com/file/d/1rimZ2-SVYcMUg2qWhu2FLg6AAwGhcq6t/view?usp=sharing)
+
+### Ethan Chiang
+* Done:
+Worked on overall design of the system. More research on onion routing. Design doc of the communication protocol.
+* TODO:
+Learn more about Flask or maybe plan B. Look up existing onion routing code for python or JS (plan B). Start implementaion.   
+[Link to design doc](https://docs.google.com/document/d/19onjzhucERwFjXTuXm8a50Hb7GHRIj3y9smZuJ6jJjg/edit?usp=sharing)
+
+
 # Milestone 1
 
 ## Video
