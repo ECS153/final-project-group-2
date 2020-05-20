@@ -41,29 +41,40 @@ To make back-tracing harder, we can either:
 
 class Node:
 
-  def __init__(self, id):
+
+  def __init__(self, id, mixnet):
+
     keys = getKeys()
     self.id = id
     self.public_key = keys[0]
     self.private_key = keys[1]
-    self.received_queue = []
-    self.awaiting_queue = []
+    self.received_queue = list()
+    self.awaiting_queue = list()
+    self.outBoundPayload = None
+    # Referance to the mixnet singleton
+    self.mixnet = mixnet
   
-  
+  def receive(self, payload):
+    self.received_queue.append(payload)
+    print("Received payload: {}".format(payload))
 
-  def receive_packets(list_of_packets):
-    self.received_queue = list_of_packets
+  def send(self, dest, payload):
+    self.mixnet.routeTo(dest, payload)
 
+  # def receive_packets(list_of_packets):
+  #   self.received_queue = list_of_packets
   def shuffle(list_of_packets):
     random.shuffle(list_of_packets)
 
-  def decrypt_and_send(list_of_packets):
-    for packet in list_of_packets:
-      #decryption goes here
-      container = noise_creator()
-      container.append(packet)
-      shuffle(container)
-      send_packet(container)
+
+  # def decrypt_and_send(list_of_packets):
+  #   for packet in list_of_packets:
+  #     #decryption goes here
+  #     container = noise_creator()
+  #     container.append(packet)
+  #     shuffle(container)
+  #     send_packet(container)
+
 
 
   
