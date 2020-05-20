@@ -1,7 +1,7 @@
 # Milestone 2
 
 ## Video
-[Link to video](https://www.youtube.com/watch?v=o31LfDrhq-c&feature=youtu.be)
+[Link to video](https://youtu.be/ESGTRwHxJi0)
 
 ## Contribution
 ### Anthony Yang
@@ -13,11 +13,10 @@ For the upcoming week, I will continue working on the node. At this point, I am 
 
 ### Scott Lorentzen
 * Done: 
-Worked on the follw design doc, which outlines how the CMIYC blog should works. Started a prototypr of a blog website with Flask. 
+Implemented client generated noise. Worked on testing different encryption schemes using JavaScript and Python.
 * TODO:
-For the next week, I will work on implementaion and research on what python module can be helpfull.  
-[Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/1)  
-[Link to follow design doc](https://drive.google.com/file/d/1rimZ2-SVYcMUg2qWhu2FLg6AAwGhcq6t/view?usp=sharing)
+For the next week, I will continue working on encryption. Specifically I will implement the hybrid layered encryption using a mixture of AES and RSA encryption.  
+[Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/2)  
 
 ### Ethan Chiang
 * Done:
