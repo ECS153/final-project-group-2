@@ -4,6 +4,8 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 
+import random
+
 def getKeys():
   private_key = rsa.generate_private_key(
       public_exponent=65537,
@@ -28,10 +30,57 @@ def getKeys():
   #with open('private_noshare.pem', 'wb') as f: f.write(serial_private)
   #with open('public_shared.pem', 'wb') as f: f.write(serial_pub)
 
+'''
+  for the sake of simplicity we are just assuming the node would only recieve a list of packets from the previous node. We are assuming the packets in the queue are ordered by arrival time.
+'''
+'''
+To make back-tracing harder, we can either:
+  1. shuffle the whole list of received packets
+  2. retrieve a certain number and shuffle
+'''
 
 class Node:
 
-  def __init__(self):
+  def __init__(self, id, mixnet):
     keys = getKeys()
+    self.id = id
     self.public_key = keys[0]
     self.private_key = keys[1]
+    self.received_queue = list()
+    self.awaiting_queue = list()
+    self.outBoundPayload = None
+    # Referance to the mixnet singleton
+    self.mixnet = mixnet
+  
+  def receive(self, payload):
+    self.received_queue.append(payload)
+    print("Received payload: {}".format(payload))
+
+  def send(self, dest, payload):
+    self.mixnet.routeTo(dest, payload)
+
+  # def receive_packets(list_of_packets):
+  #   self.received_queue = list_of_packets
+
+  def shuffle(list_of_packets):
+    random.shuffle(list_of_packets)
+
+  # def decrypt_and_send(list_of_packets):
+  #   for packet in list_of_packets:
+  #     #decryption goes here
+  #     container = noise_creator()
+  #     container.append(packet)
+  #     shuffle(container)
+  #     send_packet(container)
+
+
+  
+  def noise_creator():
+    list_of_noise = []
+    '''
+      generating some fake packets here and fill the list up here
+    '''
+    return list_of_noise
+
+  def send_packet(list):
+    pass; 
