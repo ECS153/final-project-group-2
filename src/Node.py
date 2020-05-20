@@ -41,7 +41,9 @@ To make back-tracing harder, we can either:
 
 class Node:
 
+
   def __init__(self, id, mixnet):
+
     keys = getKeys()
     self.id = id
     self.public_key = keys[0]
@@ -61,9 +63,9 @@ class Node:
 
   # def receive_packets(list_of_packets):
   #   self.received_queue = list_of_packets
-
   def shuffle(list_of_packets):
     random.shuffle(list_of_packets)
+
 
   # def decrypt_and_send(list_of_packets):
   #   for packet in list_of_packets:
@@ -72,6 +74,7 @@ class Node:
   #     container.append(packet)
   #     shuffle(container)
   #     send_packet(container)
+
 
 
   
