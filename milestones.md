@@ -8,23 +8,28 @@
 * Done: Made important decisions on how to implement the node. Started writing API for the node. 
 
 * TODO:
-For the upcoming week, I will continue working on the node. At this point, I am stuck on implementing the node in a single thread point of view. (We have to decide how to hide data within the noise.)
-[Link to node design doc](https://docs.google.com/document/d/1dbC9gJvCgyTVsaopRKNBOPJZnjFKXFHqV19T7Wt-1sw/edit?usp=sharing)
+For the upcoming week, I will continue working on the node. At this point, I am stuck on implementing the node in a single thread point of view. (We have to decide how to hide data within the noise.)  
+* [Link to commits](https://github.com/ECS153/final-project-group-catch-me-if-you-can/commit/9c5b888251488bde4be9a0d1aae47fdd06086ea1)  
+* [Link to updated node design doc](https://docs.google.com/document/d/1dbC9gJvCgyTVsaopRKNBOPJZnjFKXFHqV19T7Wt-1sw/edit?usp=sharing)
 
 ### Scott Lorentzen
 * Done: 
 Implemented client generated noise. Worked on testing different encryption schemes using JavaScript and Python.
 * TODO:
 For the next week, I will continue working on encryption. Specifically I will implement the hybrid layered encryption using a mixture of AES and RSA encryption.  
-[Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/2)  
+* [Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/2)  
 
 ### Ethan Chiang
 * Done:
-Worked on overall design of the system. More research on onion routing. Design doc of the communication protocol.
+Drafted and start implementation of mixnet. Helped with Node design and implementation. Design payload format. 
 * TODO:
-Learn more about Flask or maybe plan B. Look up existing onion routing code for python or JS (plan B). Start implementaion.   
-[Link to design doc](https://docs.google.com/document/d/19onjzhucERwFjXTuXm8a50Hb7GHRIj3y9smZuJ6jJjg/edit?usp=sharing)
+Continue on working on mixnet, finish send and receive. Work on encryption, and make sure it works with client JS.  
+* [Link to pull requests](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/4/)
+* [Link to communication design doc](https://docs.google.com/document/d/19onjzhucERwFjXTuXm8a50Hb7GHRIj3y9smZuJ6jJjg/edit?usp=sharing)
+* [Link to mixnet design doc](https://docs.google.com/document/d/1b_i8GX-ESk5HST2GGUbwnlR8nmCN1DbaHudI-Lw0fNs/edit?usp=sharing)
 
+## Link to meeting notes  
+[Meeting Notes](https://docs.google.com/document/d/13nuzrEe7XipyKbtna90X-YhBOP07sIHceZHiEE8fTyI/edit?usp=sharing)
 
 # Milestone 1
 
@@ -55,7 +60,5 @@ Learn more about Flask or maybe plan B. Look up existing onion routing code for 
 [Link to design doc](https://docs.google.com/document/d/19onjzhucERwFjXTuXm8a50Hb7GHRIj3y9smZuJ6jJjg/edit?usp=sharing)
 
 
-# Link to meeting notes
-[Meeting Notes](https://docs.google.com/document/d/13nuzrEe7XipyKbtna90X-YhBOP07sIHceZHiEE8fTyI/edit?usp=sharing)
 
 
