@@ -6,10 +6,9 @@
 ## Contribution
 ### Anthony Yang
 * Done: Made important decisions on how to implement the node. Started writing API for the node. 
-
 * TODO:
-For the upcoming week, I will continue working on the node. At this point, I am stuck on implementing the node in a single thread point of view. (We have to decide how to hide data within the noise.)  
-* [Link to commits](https://github.com/ECS153/final-project-group-catch-me-if-you-can/commit/9c5b888251488bde4be9a0d1aae47fdd06086ea1)  
+For the upcoming week, I will continue working on the node. At this point, I am stuck on implementing the node in a single thread point of view. (We have to decide how to hide data within the noise.)
+* [Link to commits](https://github.com/ECS153/final-project-group-catch-me-if-you-can/commit/9c5b888251488bde4be9a0d1aae47fdd06086ea1)
 * [Link to updated node design doc](https://docs.google.com/document/d/1dbC9gJvCgyTVsaopRKNBOPJZnjFKXFHqV19T7Wt-1sw/edit?usp=sharing)
 
 ### Scott Lorentzen
