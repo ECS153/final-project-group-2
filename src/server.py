@@ -2,10 +2,16 @@ import datetime
 from flask import Flask, render_template, url_for, flash, request, redirect
 from flask_cors import CORS, cross_origin
 import sqlite3 as sql
+import json
+
 app = Flask(__name__)
 
 # enable cross origin ajax requests
 CORS(app)
+
+HOST = 'localhost'
+DEBUG = True
+PORT = 5000
 
 
 @app.route("/", methods=['GET'])
@@ -32,8 +38,10 @@ def erase():
 def comment():
     comment = request.json
 
+    comment = json.loads(comment)
+
     # If the message is a fake one, just return immediately
-    if (comment['Onion']):
+    if (comment['onion']):
         return ('', 204)
 
     # Otherwise handle the message normally
@@ -41,7 +49,8 @@ def comment():
     date = datetime.datetime.now()
     date_posted = date.strftime("%x")
     time_posted = date.strftime("%X")
-    message = comment['Content']
+
+    message = comment['content']
 
     # Insert the message to the database
     try:
@@ -56,4 +65,4 @@ def comment():
         return ('', 204)
 
 if (__name__ == "__main__"):
-    app.run(debug=True)
+    app.run(host=HOST, debug=DEBUG, port=PORT)
