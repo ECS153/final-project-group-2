@@ -91,9 +91,23 @@
       function SendOnion() {
         var randLength = Math.floor(Math.random() * (MAX_STRING_LENGTH - MIN_STRING_LENGTH) + MIN_STRING_LENGTH);
         // found at https://gist.github.com/6174/6062387 for basic random string gereration
+<<<<<<< HEAD
+        var randString = [...Array(randLength)].map(i=>chars[Math.random()*chars.length|0]).join``;
+
+        var postData = JSON.stringify({'Onion': true, 'Content': randString})
+        var request = $.ajax({
+          type: 'POST',
+          url: 'http://localhost:5000/intro',
+          data: postData,
+          dataType: 'json',
+          contentType: 'application/json'
+        });
+        request.done(function() {requestPending = false;})
+=======
         var message = [...Array(randLength)].map(i=>chars[Math.random()*chars.length|0]).join``;
         var encryptedMessage = EncryptMessage(message, true);
         SendMessage(encryptedMessage);
+>>>>>>> b0a9eb250e8bccd511ecd9ea7562f253fe9354d1
       }
 
       // When the user tries to post a comment, the comment
