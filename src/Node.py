@@ -41,8 +41,8 @@ class Node:
   # def convert_to_json(dict: dictionary):
   #   return json.dumps(dictionary)
 
-  def send(self, dest, packet):
-    self.mixnet.routeTo(dest, packet)
+  # def send(self, dest, packet):
+  #   self.mixnet.routeTo(dest, packet)
 
   # def receive_packets(list_of_packets):
   #   self.received_queue = list_of_packets
@@ -73,31 +73,18 @@ class Node:
   def decode_packet(self, packet):
     packetDic = json.loads(packet)
     
-    secret = packetDic["secret"]
-    keys = packetDic["keys"]
-    key = packetDic["keys"].pop(0)
+    secret = packetDic.get('secret')
+    key = packetDic.get('key')
 
     # TODO: RSA decyption on key then ASE decryption on secret
-    # then load secret (JSON) into dict
+    # then load secret (JSON) into dict and return 
 
     '''
     How do we determine when the packet has reached its final destination? My thoughts: check if 'next' is found in secret? 
+    A: that is correct
     '''
+    return secret
 
-    if secret.get("next") == None:
-      Next = "Post To Server" 
-      newSecret = secret["secret"]
-    
-    else: 
-      Next = secret["next"]
-      newSecret = secret["secret"]
-
-      newPacket = {
-        "keys": keys,
-        "secret": newSecret
-      }
-
-    return {'next': Next, 'newPacket': newPacket}
 
   def build_new_packet(key):
     pass
@@ -132,28 +119,43 @@ class Node:
     while True:
       if len(self.awaiting_queue) != 0:
         packet = self.awaiting_queue.pop()
+        # Decode the packet and store 
+        decoded_secret = self.decode_packet(self, packet)
 
-        #decode the packet and store 
-        decoded_value = decode_packet(self, packet)
-        next_dest = decoded_value['next']
-        newPacket = decoded_value['newPacket']
+        # No more layer, check if there is a post
+        if decoded_secret.get("next") == None:
+          # Update DB with post
+          if decoded_secret.get('isReal') == True:
+            self.mixnet.post_to_blog(decoded_secret.get('post'))
+          # Do nothing
+          else:
+            pass
+        # More layers
+        else: 
+          next = decoded_secret.get('next')
+          content = decoded_secret.get('content')
+          # Put to sleep with random time
+          time.sleep(random.randrange(0, 0.087))
+          # Send packet
+          self.mixnet.route_to(next, content)
 
-        # put to sleep with random time
-        time.sleep(random.randrange(0, 0.087))
-        
-        #route packet to destination with routeTo API
-        send(next_dest, json.dumps(newPacket))
+
+        # next_dest = decoded_value['next']
+        # new_packet = decoded_value['newPacket']
       else:
         '''
         I am thinking if there would be any race condition here, because what if there are packets being recieved when we try to take packets out of the received_queue?
+
+        A: don't matter cuz queue is FIFO, if there is it will only wait a bit till it gets pull from received_queue
         '''
         # Grab oldest 5 packets from received_queue
-        if(len(self.received_queue) <= 5):
+        if(len(self.received_queue) < 5):
           temp = random.shuffle(self.received_queue)
-          self.waiting_queue = temp
+          self.awaiting_queue = temp
           self.received_queue.clear()
         else:
           temp = self.received_queue[:5]
           random.shuffle(temp)
-          self.waiting_queue = temp
+          self.awaiting_queue = temp
           self.recieved_queue = self.received_queue[5:]
+
