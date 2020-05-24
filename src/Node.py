@@ -1,5 +1,6 @@
 import random
 import json
+import time
 
 
   #with open('private_noshare.pem', 'wb') as f: f.write(serial_private)
@@ -30,6 +31,7 @@ class Node:
   # Put the received packet in the received queue
   def receive(self, packet):
     self.received_queue.append(packet)
+    print("Received packet!")
     #print("Received payload: {}".format(payload))
 
 
@@ -78,16 +80,27 @@ class Node:
     # TODO: RSA decyption on key then ASE decryption on secret
     # then load secret (JSON) into dict
 
-    next = secret["next"]
-    newSecret = secret["secret"]
+    '''
+    How do we determine when the packet has reached its final destination? My thoughts: check if 'next' is found in secret? 
+    '''
 
-    newPacket = {
-      "keys": keys,
-      "secret": newSecret
-    }
+    if secret.get("next") == None:
+      Next = "Post To Server" 
+      newSecret = secret["secret"]
+    
+    else: 
+      Next = secret["next"]
+      newSecret = secret["secret"]
+
+      newPacket = {
+        "keys": keys,
+        "secret": newSecret
+      }
+
+    return {'next': Next, 'newPacket': newPacket}
 
   def build_new_packet(key):
-
+    pass
 
 
 
@@ -120,6 +133,27 @@ class Node:
       if len(self.awaiting_queue) != 0:
         packet = self.awaiting_queue.pop()
 
+        #decode the packet and store 
+        decoded_value = decode_packet(self, packet)
+        next_dest = decoded_value['next']
+        newPacket = decoded_value['newPacket']
+
+        # put to sleep with random time
+        time.sleep(random.randrange(0, 0.087))
+        
+        #route packet to destination with routeTo API
+        send(next_dest, json.dumps(newPacket))
       else:
-        # Grad oldest 5 packets from received_queue
-        self.received_queue[:5]
+        '''
+        I am thinking if there would be any race condition here, because what if there are packets being recieved when we try to take packets out of the received_queue?
+        '''
+        # Grab oldest 5 packets from received_queue
+        if(len(self.received_queue) <= 5):
+          temp = random.shuffle(self.received_queue)
+          self.waiting_queue = temp
+          self.received_queue.clear()
+        else:
+          temp = self.received_queue[:5]
+          random.shuffle(temp)
+          self.waiting_queue = temp
+          self.recieved_queue = self.received_queue[5:]
