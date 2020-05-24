@@ -81,10 +81,10 @@ class Node:
 
     '''
     How do we determine when the packet has reached its final destination? My thoughts: check if 'next' is found in secret? 
-
     A: that is correct
     '''
     return secret
+
 
   def build_new_packet(key):
     pass
@@ -119,7 +119,6 @@ class Node:
     while True:
       if len(self.awaiting_queue) != 0:
         packet = self.awaiting_queue.pop()
-
         # Decode the packet and store 
         decoded_secret = self.decode_packet(self, packet)
 
@@ -159,4 +158,4 @@ class Node:
           random.shuffle(temp)
           self.awaiting_queue = temp
           self.recieved_queue = self.received_queue[5:]
-        
+
