@@ -3,16 +3,22 @@ from flask import Flask, render_template, url_for, flash, request, redirect
 from flask_cors import CORS, cross_origin
 import sqlite3 as sql
 import json
+import sys
 
 app = Flask(__name__)
 
 # enable cross origin ajax requests
 CORS(app)
 
-HOST = 'localhost'
+args = sys.argv
+
+if (len(args) != 2):
+    print("python3", args[0], "<hostname>")
+    quit()
+
+HOST = args[1]
 DEBUG = True
 PORT = 5000
-
 
 @app.route("/", methods=['GET'])
 def home():
@@ -38,7 +44,7 @@ def erase():
 def comment():
     comment = request.json
 
-    comment = json.loads(comment)
+    #comment = json.loads(comment)
 
     # If the message is a fake one, just return immediately
     if (comment['onion']):

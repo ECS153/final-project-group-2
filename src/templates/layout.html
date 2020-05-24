@@ -24,10 +24,10 @@
         <div class="col-md-8">
           <article class="media content-section">
             <div class="media-body">
-              <form class="">
-                <textarea id="CommentTextBox" cols="48" rows="4"></textarea> <br>
+              <div>
+                <textarea id="CommentTextBox" style="width:100%" rows="4"></textarea> <br>
                 <input id="PostCommentButton" type="submit" value="Post New Comment" onClick="BufferComment()"
-              </form>
+              </div>
             </div>
           </article>
           {% block content %}{% endblock %}
@@ -48,21 +48,24 @@
 
     <script type="text/javascript">
 
-      public_keys = [];
+      nodes = [];
 
       //var next_url = 'http://10.0.0.3:10000/intro';
-      var server_url = 'http://localhost:5000/comment'
-      var next_url = 'http://localhost:10000/comment';
-      var get_keys_url = 'http://localhost:10000/getkeys';
+      var SERVER_URL = 'http://10.0.0.3:5000/comment'
+      var PORT = 10000;
+      var MAX_NUM_NODES = 10;
+      var NEXT_URL_PRE = 'http://10.0.0.3:';
+      var NEXT_URL_POST = '/comment';
+      var GET_URL_POST = '/getkeys';
 
 
-      var interval = 5000; // This is the time between messages
+      var interval = 200; // This is the time between messages
       var requestPending = false;
       var commentBuffer = [];
       var intervalTimer;
       var MIN_STRING_LENGTH = 5;
       var MAX_STRING_LENGTH = 250;
-      var AES_key_size = 16; // 16 bytes for AES256
+      var AES_KEY_SIZE = 16; // 16 bytes for AES256
       // found at https://gist.github.com/6174/6062387 for basic random string gereration
       const chars = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"];
 
@@ -107,9 +110,16 @@
 
       function generateKeyAndIV(){
         // Need a better way of generating a key, possible sending this through the PBKDF2?
-        var rKey = [...Array(AES_key_size)].map(i=>chars[Math.random()*chars.length|0]).join``;
+        var rKey = [...Array(AES_KEY_SIZE)].map(i=>chars[Math.random()*chars.length|0]).join``;
         var key = CryptoJS.enc.Utf8.parse(rKey);
-        var iv = CryptoJS.lib.WordArray.random(AES_key_size);
+        //var salt = CryptoJS.lib.WordArray.random(128 / 8);
+        var iv = CryptoJS.lib.WordArray.random(AES_KEY_SIZE);
+
+        // 256 bit key
+        //var key = CryptoJS.PBKDF2(rKey, salt, {keySize: 256 / 32, iterations: 1000});
+
+        //console.log(key.toString());
+        //var key = CryptoJS.enc.Utf8.parse(rKey);
         //var salt = CryptoJS.lib.WordArray.random(256/8);
         //return CryptoJS.PBKDF2(p, salt, { keySize: 512/32, iterations: 1000 });
         return [key, iv];
@@ -118,20 +128,43 @@
       // Temporary encrypt message. Will perform the actual layered encryption
       function EncryptMessage(message, isOnion) {
 
-        var jsonMsg = JSON.stringify({'next_url': server_url, 'onion': isOnion, 'content': message});
+        var jsonMsg = {'next_url': SERVER_URL, 'onion': isOnion, 'content': message};
 
-        // Generate AES Key and IV, and encrypt the actual message
-        var key_iv = generateKeyAndIV();
-        var encryptedMessage = CryptoJS.AES.encrypt(jsonMsg, key_iv[0], { iv: key_iv[1] });
-        encryptedMessage = key_iv[1].concat(encryptedMessage.ciphertext).toString(CryptoJS.enc.Base64);
+        var node_indices = []
+        for (var i = 0; i < nodes.length; i++) {
+          node_indices.push(i);
+        }
 
-        // Encrypt the AES key using RSA
-        var encryptor = new JSEncrypt();
-        encryptor.setPublicKey(public_keys);
-        var encryptedKey = encryptor.encrypt(CryptoJS.enc.Utf8.stringify(key_iv[0]));
-        var finalJSON = JSON.stringify({'next_url': next_url, 'content': encryptedMessage, 'key': encryptedKey});
+        for (var i = node_indices.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var temp = node_indices[i];
+          node_indices[i] = node_indices[j];
+          node_indices[j] = temp;
+        }
 
-        return finalJSON;
+        for (var i = 0; i < node_indices.length; i++) {
+          // Generate AES Key and IV, and encrypt the actual message
+          var key_iv = generateKeyAndIV();
+          //console.log("CURRENT I: " + i);
+          //console.log(key_iv)
+          var encryptedMessage = CryptoJS.AES.encrypt(JSON.stringify(jsonMsg), key_iv[0], { iv: key_iv[1] });
+          //var encryptedMessage = CryptoJS.AES.encrypt(jsonMsg, key_iv[0]);
+          //console.log(key_iv[0]);
+          //console.log(encryptedMessage.key.toString());
+          encryptedMessage = key_iv[1].concat(encryptedMessage.ciphertext).toString(CryptoJS.enc.Base64);
+
+          // Encrypt the AES key using RSA
+          var encryptor = new JSEncrypt();
+          encryptor.setPublicKey(nodes[node_indices[i]]['key']);
+          //var encryptedKey = encryptor.encrypt(key_iv[0]);
+          var encryptedKey = encryptor.encrypt(CryptoJS.enc.Utf8.stringify(key_iv[0]));
+          while(encryptedKey.length != 344) {
+            encryptedKey = encryptor.encrypt(CryptoJS.enc.Utf8.stringify(key_iv[0]));
+          }
+          jsonMsg = {'next_url': nodes[node_indices[i]]['url'], 'content': encryptedMessage, 'key': encryptedKey};
+        }
+
+        return jsonMsg;
       }
 
       // Post the next most recent buffered comment
@@ -145,8 +178,8 @@
       function SendMessage(message) {
         var request = $.ajax({
           type: 'POST',
-          url: next_url,
-          data: message,
+          url: message['next_url'],
+          data: JSON.stringify(message),
           dataType: 'json',
           contentType: 'application/json'
         });
@@ -156,13 +189,20 @@
       // Will need to modify this as we have more mixnet nodes
       //  (and in turn more public keys)
       function GetPublicKeys() {
-        var request = $.ajax({
-          type: 'GET',
-          url: get_keys_url,
-          dataType: 'json',
-          contentType: 'application/json'
-        });
-        request.done(function(response) {public_keys = response['key']})
+        for (var i = 0; i < MAX_NUM_NODES; i++) {
+          var next_url = NEXT_URL_PRE + (PORT + i).toString() + GET_URL_POST;
+          var request = $.ajax({
+            type: 'GET',
+            url: next_url,
+            dataType: 'json',
+            contentType: 'application/json'
+          });
+          request.done(function(response) {
+            if (response != null) {
+              nodes.push(response);
+            }
+          });
+        }
       }
 
     </script>
