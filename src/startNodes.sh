@@ -9,7 +9,7 @@ fi
 ./genRSAKey.sh $1
 
 for (( i = 0; i < $1; i++ )); do
-  gnome-terminal -- python3 testMixNode.py $i $2
+  gnome-terminal -- python3 node.py $i $2 $1
 done
 
-python3 ./server.py $2
+python3 ./server.py $2 $1
