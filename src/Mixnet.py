@@ -45,15 +45,18 @@ class Mixnet:
       self.node_process.append(multiprocessing.Process(target=self.nodes[i].main))
 
     # Start the processes
-    for element in self.node_process:
-      element.start()
+    for p in self.node_process:
+      p.start()
+
+    # for p in self.node_process:
+    #   p.join()
 
     print("Create mixnet with {} nodes".format(number_of_nodes))
   
   # Method to send a payload to a node
   def route_to(self, dest, payload):
     self.nodes[dest].receive(payload)
-    print("Sent payload to node{}".format(payload, dest))
+    print("Sent packet to node{}".format(dest))
 
   # Method to update database with new post
   def post_to_blog(self, post):
@@ -63,19 +66,10 @@ class Mixnet:
   # Method to handle fisrt arrival
   def mixnet_gateway(self, packet):
     packetObj = json.loads(packet)
-    next_nodeID = packetObj.get('next_url')
+    next = packetObj.get('next')
     content = packetObj.get("content")
-    self.route_to(next_nodeID, content)
-
-
-  '''
-  Here is what I think:
-  1. Post data being onion encrypted and sent off from server to first node
-  2. Then the first node checks the packet and use to key to peel off the first layer of packet to find destination. This can be done by calling package[secret][dest]. 
-  3. But since we don't need previous dest and key we can remove them and let package be only "secret:" to be sent off. It is like peeling of an onion as the packet traverse through the mixnet. 
-  4. Perform this recursively and when we see secret[dest] == Not found, we know that it has reached its final destination 
-  '''
-
+    key = packetObj.get('key')
+    self.route_to(next, json.dumps({'key':key, 'content':content}))
 
 # Function to generate asymmentric keys
 def getKeys(id):
