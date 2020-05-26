@@ -8,7 +8,7 @@
 * Done: Implemented the node infrastructure under Ethan's instructions.
 * TODO: Implementation so that nodes can communicate with each other.
 * BLOCK: Same as TODO.
-* [Link to commits](https://github.com/ECS153/final-project-group-catch-me-if-you-can/commit/9c5b888251488bde4be9a0d1aae47fdd06086ea1)
+* [Link to commits](https://github.com/ECS153/final-project-group-catch-me-if-you-can/commit/58c61ea18b14b9a10848bde229fbaa23933c39c2)
 * [Link to updated node design doc](https://docs.google.com/document/d/1dbC9gJvCgyTVsaopRKNBOPJZnjFKXFHqV19T7Wt-1sw/edit?usp=sharing)
 ### Scott Lorentzen
 
