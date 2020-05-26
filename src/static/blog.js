@@ -1,43 +1,49 @@
 
 var nodes = [];
-const HOST = "10.0.0.3";
+var HOST = "10.0.0.3";
 const PORT = 10000;
-const MAX_NUM_NODES = 10;
+var MAX_NUM_NODES = 10;
 const INTERVAL = 200; // This is the time between messages
 
-const SERVER_URL = 'http://' + HOST + ':5000/comment'
-const NEXT_URL_PRE = 'http://' + HOST + ':';
+var SERVER_URL = 'http://' + HOST + ':5000/comment'
+var NEXT_URL_PRE = 'http://' + HOST + ':';
 const GET_KEYS_POST = '/getkeys';
 
 var MIN_STRING_LENGTH = 5;
 var MAX_STRING_LENGTH = 250;
 var AES_KEY_SIZE = 16; // 16 bytes for AES256
-
 var intervalTimer;
 var requestPending = false;
 var commentBuffer = [];
 // found at https://gist.github.com/6174/6062387 for basic random string gereration
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-// Retrive all of the public keys
-GetPublicKeys();
+function StartMessages() {
+  // send a message at a continous rate
+  intervalTimer = setInterval(function() {
+    // if a message is still in transit, don't send a new message
+    if (requestPending) return;
 
-// send a message at a continous rate
-intervalTimer = setInterval(function() {
-  // if a message is still in transit, don't send a new message
-  if (requestPending) return;
+    // if there are any real user posts buffered, send
+    // those instead of sending noise
+    if (commentBuffer.length != 0) {
+      PostComment();
+    }
+    else { // else send a fake message
+      SendNoise();
+    }
 
-  // if there are any real user posts buffered, send
-  // those instead of sending noise
-  if (commentBuffer.length != 0) {
-    PostComment();
-  }
-  else { // else send a fake message
-    SendNoise();
-  }
+    requestPending = true;
+  }, INTERVAL);
+}
 
-  requestPending = true;
-}, INTERVAL);
+function SetupNodeInfo(node_info) {
+  HOST = node_info['host'];
+  MAX_NUM_NODES = node_info['num_nodes'];
+
+  SERVER_URL = 'http://' + HOST + ':5000/comment'
+  NEXT_URL_PRE = 'http://' + HOST + ':';
+}
 
 // Generates a pseudo-random string of given length
 //  NOTE THIS IS NOT CRYPTOGRAPHICALLY SECURE RANDOMNESS

@@ -17,7 +17,7 @@ if (len(args) != 3):
     quit()
 
 HOST = args[1]
-NUM_NODES = args[2]
+NUM_NODES = int(args[2])
 DEBUG = True
 PORT = 5000
 

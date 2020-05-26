@@ -48,6 +48,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/aes.min.js"></script>
 
     <script type="text/javascript" src="{{ url_for('static', filename='blog.js')}}"></script>
+    <script type="text/javascript">
+      // Pass the hostname and number of nodes to the client's javascript
+      SetupNodeInfo({{node_info|tojson}});
+      // Retrieve all of the public keys
+      GetPublicKeys();
+      // Start the constant service to send messages
+      StartMessages()
+    </script>
 
   </body>
 </html>
