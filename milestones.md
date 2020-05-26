@@ -1,3 +1,20 @@
+# Milestone 3
+
+## Video 
+[Link to video](https://youtu.be/8lus37fdeNo)
+
+## Contribution
+### Anthony Yang
+* Done: Implemented the node infrastructure under Ethan's instructions.
+* TODO: Implementation so that nodes can communicate with each other.
+* BLOCK: Same as TODO.
+* [Link to commits](https://github.com/ECS153/final-project-group-catch-me-if-you-can/commit/9c5b888251488bde4be9a0d1aae47fdd06086ea1)
+* [Link to updated node design doc](https://docs.google.com/document/d/1dbC9gJvCgyTVsaopRKNBOPJZnjFKXFHqV19T7Wt-1sw/edit?usp=sharing)
+### Scott Lorentzen
+
+### Ethan Chiang
+
+
 # Milestone 2
 
 ## Video
