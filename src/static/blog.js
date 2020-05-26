@@ -1,4 +1,3 @@
-"use strict";
 
 var nodes = [];
 const HOST = "10.0.0.3";
@@ -25,8 +24,6 @@ GetPublicKeys();
 
 // send a message at a continous rate
 intervalTimer = setInterval(function() {
-  console.log("Next");
-
   // if a message is still in transit, don't send a new message
   if (requestPending) return;
 
@@ -107,7 +104,7 @@ function EncryptMessage(message, is_real) {
   nodes = shuffleNodePath(nodes);
 
   // iterate over the path of nodes to generate the layered encryption
-  for (var next_node in nodes) {
+  nodes.forEach(function(next_node) {
     // Generate AES Key and IV, and encrypt the actual message
     var key_iv = generateKeyAndIV();
     var encryptedMessage = CryptoJS.AES.encrypt(JSON.stringify(jsonMsg), key_iv[0], { iv: key_iv[1] });
@@ -115,13 +112,13 @@ function EncryptMessage(message, is_real) {
 
     // Encrypt the AES key using RSA
     var encryptor = new JSEncrypt();
-    encryptor.setPublicKey(next_node.key);
+    encryptor.setPublicKey(next_node['key']);
     var encryptedKey = encryptor.encrypt(CryptoJS.enc.Utf8.stringify(key_iv[0]));
     while(encryptedKey.length != 344) {
       encryptedKey = encryptor.encrypt(CryptoJS.enc.Utf8.stringify(key_iv[0]));
     }
-    jsonMsg = {'next_url': next_node.url, 'content': encryptedMessage, 'key': encryptedKey};
-  }
+    jsonMsg = {'next_url': next_node['url'], 'content': encryptedMessage, 'key': encryptedKey};
+  });
 
   return jsonMsg;
 }
@@ -137,7 +134,7 @@ function PostComment() {
 function SendMessage(message) {
   var request = $.ajax({
     type: 'POST',
-    url: message.next_url,
+    url: message['next_url'],
     data: JSON.stringify(message),
     dataType: 'json',
     contentType: 'application/json'
