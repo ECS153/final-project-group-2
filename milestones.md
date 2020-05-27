@@ -13,7 +13,8 @@
 ### Scott Lorentzen
 * Done: Implemented JavaScript AES/RSA hybrid encryption on client side, and python decryption within the mixnet nodes. Also added python AES/RSA encryption on mixnet nodes to allow for the generation of noise. Wrote some bash automation scripts to make the server/nodes startup much easier.
 * TODO: Still need to look into gunicorn as a possible more efficient way to run the servers.
-* [Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/2) 
+* [Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/5)
+* [Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/8) 
 ### Ethan Chiang
 
 
