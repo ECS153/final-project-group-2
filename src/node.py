@@ -11,6 +11,10 @@ import sys
 import random
 import os
 import string
+import datetime
+import time
+import multiprocessing
+
 app = Flask(__name__)
 
 # enable cross origin ajax requests
@@ -30,6 +34,10 @@ PRE_URL = 'http://' + HOST + ':'
 POST_URL = '/comment'
 BASE_PORT = 10000
 SERVER_URL = PRE_URL + '5000/comment'
+
+# Message queues
+buffer_queue = list()
+outbound_queue = list()
 
 def pad(msg):
     block_size = 16
@@ -100,6 +108,9 @@ def comment():
     #if (type(comment) == type("")):
         #comment = json.loads(comment)
 
+    # Putting received message into buffer queue and wati to be process
+    buffer_queue.append(comment)
+
     # decrypt the AES symmetric key using RSA
     aes_key = decrypt_rsa(comment['key']).encode('utf-8')
 
@@ -109,6 +120,16 @@ def comment():
     # retrieve the next url to send to from the decrypted json
     decrypted_json = json.loads(decrypted_str)
     next_url = decrypted_json['next_url']
+
+    # Logs
+    f = open(args[1]+'.log', 'a')
+    f.write('\nReceived message at {}'.format(request.remote_addr, datetime.datetime.now()))
+    f.write('\nSent {} to {} at {}'.format(decrypted_json, next_url, datetime.datetime.now()))
+    f.close()
+
+    # Random delay 1-7ms
+    delay = random.randint(1,7)
+    time.sleep(delay/1000)
 
     res = requests.post(next_url, json=decrypted_json)
     return ('', 204)
@@ -122,7 +143,9 @@ def getkeys():
     return {'url': 'http://' + HOST + ':' + str(PORT) + '/comment', 'key': public_key}
 
 if (__name__ == "__main__"):
-    noise_scheduler = APScheduler()
-    noise_scheduler.add_job(func=generate_noise, args=[], trigger='interval', id='noise', seconds=0.5)
-    noise_scheduler.start()
+    # noise_scheduler = APScheduler()
+    # noise_scheduler.add_job(func=generate_noise, args=[], trigger='interval', id='noise', seconds=0.5)
+    # noise_scheduler.start()
     app.run(host=HOST, debug=DEBUG, port=PORT) # ssl_context="adhoc" to add TLS
+
+
