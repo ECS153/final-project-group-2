@@ -1,4 +1,4 @@
-# Project Proposal
+# Project Proposal - Catch Me If You Can
 
 In this project, we are proposing a system that is similar to vuvuzela, that aims at hiding metadata associates with data transmission. Many people might think they are safe behind their screens while online. The truth is far from that. An informed person knows that they left a trail of digital footprints while sending any things through the internet. It is well-known that the government has the power to force internet service providers (ISPs) to hand over all kinds of records on their server, thanks to things like the “patriot act”. This compromised our rights to free speech, which is guaranteed in the first amendment. An individual might be in fear of any negative impact it might bring by saying something online, this might either comes from the government or the “notorious” people of the internet. This fear keeps people from sharing opinions, even something that might be beneficial to society. Our project is hoping to provide a platform to share an opinion online with maximum anonymity.
   
