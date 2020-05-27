@@ -16,6 +16,13 @@
 * [Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/5)
 * [Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/8) 
 ### Ethan Chiang
+* Done: Implemented node: activity logging, node working cycle and random delay.  
+* TODO: Work on final tuning of project and presentation.  
+* [Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/9/)
+
+### Link to meeting notes  
+[Meeting Notes](https://docs.google.com/document/d/13nuzrEe7XipyKbtna90X-YhBOP07sIHceZHiEE8fTyI/edit?usp=sharing)
+
 
 
 # Milestone 2
@@ -46,9 +53,6 @@ Continue on working on mixnet, finish send and receive. Work on encryption, and 
 * [Link to pull requests](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/4/)
 * [Link to communication design doc](https://docs.google.com/document/d/19onjzhucERwFjXTuXm8a50Hb7GHRIj3y9smZuJ6jJjg/edit?usp=sharing)
 * [Link to mixnet design doc](https://docs.google.com/document/d/1b_i8GX-ESk5HST2GGUbwnlR8nmCN1DbaHudI-Lw0fNs/edit?usp=sharing)
-
-## Link to meeting notes  
-[Meeting Notes](https://docs.google.com/document/d/13nuzrEe7XipyKbtna90X-YhBOP07sIHceZHiEE8fTyI/edit?usp=sharing)
 
 # Milestone 1
 
