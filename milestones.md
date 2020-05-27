@@ -1,3 +1,23 @@
+# Milestone 3
+
+## Video 
+[Link to video](https://youtu.be/8lus37fdeNo)
+
+## Contribution
+### Anthony Yang
+* Done: Implemented the node infrastructure under Ethan's instructions.
+* TODO: Implementation so that nodes can communicate with each other.
+* BLOCK: Same as TODO.
+* [Link to commits](https://github.com/ECS153/final-project-group-catch-me-if-you-can/commit/58c61ea18b14b9a10848bde229fbaa23933c39c2)
+* [Link to updated node design doc](https://docs.google.com/document/d/1dbC9gJvCgyTVsaopRKNBOPJZnjFKXFHqV19T7Wt-1sw/edit?usp=sharing)
+### Scott Lorentzen
+* Done: Implemented JavaScript AES/RSA hybrid encryption on client side, and python decryption within the mixnet nodes. Also added python AES/RSA encryption on mixnet nodes to allow for the generation of noise. Wrote some bash automation scripts to make the server/nodes startup much easier.
+* TODO: Still need to look into gunicorn as a possible more efficient way to run the servers.
+* [Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/5)
+* [Link to pull request](https://github.com/ECS153/final-project-group-catch-me-if-you-can/pull/8) 
+### Ethan Chiang
+
+
 # Milestone 2
 
 ## Video

@@ -125,7 +125,7 @@ function EncryptMessage(message, is_real) {
     }
     jsonMsg = {'next_url': next_node['url'], 'content': encryptedMessage, 'key': encryptedKey};
   });
-  
+
   return jsonMsg;
 }
 
