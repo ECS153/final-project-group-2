@@ -123,7 +123,7 @@ def comment():
 
     # Logs
     f = open(args[1]+'.log', 'a')
-    f.write('\nReceived message at {}'.format(request.remote_addr, datetime.datetime.now()))
+    f.write('\nReceived message at {}'.format(datetime.datetime.now()))
     f.write('\nSent {} to {} at {}'.format(decrypted_json, next_url, datetime.datetime.now()))
     f.close()
 
