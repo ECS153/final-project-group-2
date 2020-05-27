@@ -24,10 +24,10 @@
         <div class="col-md-8">
           <article class="media content-section">
             <div class="media-body">
-              <form class="">
-                <textarea id="CommentTextBox" cols="48" rows="4"></textarea> <br>
+              <div>
+                <textarea id="CommentTextBox" style="width:100%" rows="4"></textarea> <br>
                 <input id="PostCommentButton" type="submit" value="Post New Comment" onClick="BufferComment()"
-              </form>
+              </div>
             </div>
           </article>
           {% block content %}{% endblock %}
@@ -36,6 +36,7 @@
     </main>
 
 
+    <!-- for ajax requests and visual containers -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
@@ -46,139 +47,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/aes.min.js"></script>
 
+    <script type="text/javascript" src="{{ url_for('static', filename='blog.js')}}"></script>
     <script type="text/javascript">
-
-      public_keys = [];
-
-      //var next_url = 'http://10.0.0.3:10000/intro';
-      var server_url = 'http://localhost:5000/comment'
-      var next_url = 'http://localhost:10000/comment';
-      var get_keys_url = 'http://localhost:10000/getkeys';
-
-
-      var interval = 5000; // This is the time between messages
-      var requestPending = false;
-      var commentBuffer = [];
-      var intervalTimer;
-      var MIN_STRING_LENGTH = 5;
-      var MAX_STRING_LENGTH = 250;
-      var AES_key_size = 16; // 16 bytes for AES256
-      // found at https://gist.github.com/6174/6062387 for basic random string gereration
-      const chars = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"];
-
-      // Retrive all of the public keys
+      // Pass the hostname and number of nodes to the client's javascript
+      SetupNodeInfo({{node_info|tojson}});
+      // Retrieve all of the public keys
       GetPublicKeys();
-
-      // send a message at a continous rate
-      intervalTimer = setInterval(function() {
-
-        // if a message is still in transit, don't send a new message
-        if (requestPending) return;
-
-        // if there are any real user posts buffered, send
-        // those instead of sending noise
-        if (commentBuffer.length != 0) {
-          PostComment();
-        }
-        else { // else send a fake message
-          SendOnion();
-        }
-
-        requestPending = true;
-      }, interval);
-
-      // Send a fake message
-      function SendOnion() {
-        var randLength = Math.floor(Math.random() * (MAX_STRING_LENGTH - MIN_STRING_LENGTH) + MIN_STRING_LENGTH);
-        // found at https://gist.github.com/6174/6062387 for basic random string gereration
-<<<<<<< HEAD
-        var randString = [...Array(randLength)].map(i=>chars[Math.random()*chars.length|0]).join``;
-
-        var postData = JSON.stringify({'Onion': true, 'Content': randString})
-        var request = $.ajax({
-          type: 'POST',
-          url: 'http://localhost:5000/intro',
-          data: postData,
-          dataType: 'json',
-          contentType: 'application/json'
-        });
-        request.done(function() {requestPending = false;})
-=======
-        var message = [...Array(randLength)].map(i=>chars[Math.random()*chars.length|0]).join``;
-        var encryptedMessage = EncryptMessage(message, true);
-        SendMessage(encryptedMessage);
->>>>>>> b0a9eb250e8bccd511ecd9ea7562f253fe9354d1
-      }
-
-      // When the user tries to post a comment, the comment
-      // is buffered until the next sending interval
-      function BufferComment() {
-        var message = document.getElementById("CommentTextBox").value;
-        if (message.replace(/\s/g, '').length) {
-          commentBuffer.push(message);
-        }
-      }
-
-      function generateKeyAndIV(){
-        // Need a better way of generating a key, possible sending this through the PBKDF2?
-        var rKey = [...Array(AES_key_size)].map(i=>chars[Math.random()*chars.length|0]).join``;
-        var key = CryptoJS.enc.Utf8.parse(rKey);
-        var iv = CryptoJS.lib.WordArray.random(AES_key_size);
-        //var salt = CryptoJS.lib.WordArray.random(256/8);
-        //return CryptoJS.PBKDF2(p, salt, { keySize: 512/32, iterations: 1000 });
-        return [key, iv];
-      }
-
-      // Temporary encrypt message. Will perform the actual layered encryption
-      function EncryptMessage(message, isOnion) {
-
-        var jsonMsg = JSON.stringify({'next_url': server_url, 'onion': isOnion, 'content': message});
-
-        // Generate AES Key and IV, and encrypt the actual message
-        var key_iv = generateKeyAndIV();
-        var encryptedMessage = CryptoJS.AES.encrypt(jsonMsg, key_iv[0], { iv: key_iv[1] });
-        encryptedMessage = key_iv[1].concat(encryptedMessage.ciphertext).toString(CryptoJS.enc.Base64);
-
-        // Encrypt the AES key using RSA
-        var encryptor = new JSEncrypt();
-        encryptor.setPublicKey(public_keys);
-        var encryptedKey = encryptor.encrypt(CryptoJS.enc.Utf8.stringify(key_iv[0]));
-        var finalJSON = JSON.stringify({'next_url': next_url, 'content': encryptedMessage, 'key': encryptedKey});
-
-        return finalJSON;
-      }
-
-      // Post the next most recent buffered comment
-      function PostComment() {
-        var message = commentBuffer.shift();
-        var encryptedMessage = EncryptMessage(message, false);
-        SendMessage(encryptedMessage);
-      }
-
-      // Send the actual JSON message to the mixnet
-      function SendMessage(message) {
-        var request = $.ajax({
-          type: 'POST',
-          url: next_url,
-          data: message,
-          dataType: 'json',
-          contentType: 'application/json'
-        });
-        request.done(function() {requestPending = false;})
-      }
-
-      // Will need to modify this as we have more mixnet nodes
-      //  (and in turn more public keys)
-      function GetPublicKeys() {
-        var request = $.ajax({
-          type: 'GET',
-          url: get_keys_url,
-          dataType: 'json',
-          contentType: 'application/json'
-        });
-        request.done(function(response) {public_keys = response['key']})
-      }
-
+      // Start the constant service to send messages
+      StartMessages()
     </script>
 
   </body>

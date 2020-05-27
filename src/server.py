@@ -3,17 +3,25 @@ from flask import Flask, render_template, url_for, flash, request, redirect
 from flask_cors import CORS, cross_origin
 import sqlite3 as sql
 import json
+import sys
 
 app = Flask(__name__)
 
 # enable cross origin ajax requests
 CORS(app)
 
-HOST = 'localhost'
+args = sys.argv
+
+if (len(args) != 3):
+    print("python3", args[0], "<hostname> <num_nodes>")
+    quit()
+
+HOST = args[1]
+NUM_NODES = int(args[2])
 DEBUG = True
 PORT = 5000
 
-
+# Default route to get the webpage
 @app.route("/", methods=['GET'])
 def home():
     con = sql.connect("database.db")
@@ -22,10 +30,13 @@ def home():
     cur.execute("SELECT * FROM messages")
 
     posts = cur.fetchall()
-    return render_template('blog.html', posts=posts)
+    node_info = {'host': HOST, 'num_nodes': NUM_NODES}
+    return render_template('blog.html', posts=posts, node_info=node_info)
 
-# THIS ROUTE IS JUST FOR TESTING
-# SIMPLY SO I DONT HAVE TO MANUALLY WIPE THE DATABASE EVERY TEST
+'''
+THIS ROUTE IS JUST FOR TESTING
+SIMPLY SO I DONT HAVE TO MANUALLY WIPE THE DATABASE EVERY TEST
+'''
 @app.route("/erase")
 def erase():
     con = sql.connect("database.db")
@@ -33,15 +44,16 @@ def erase():
     con.execute("CREATE TABLE messages (date_posted TEXT, time_posted TEXT, content TEXT)")
     return redirect("/")
 
+# The route to post a new message
 @app.route("/comment", methods=['POST'])
 @cross_origin()
 def comment():
     comment = request.json
 
-    comment = json.loads(comment)
+    #comment = json.loads(comment)
 
     # If the message is a fake one, just return immediately
-    if (comment['onion']):
+    if (not comment['is_real']):
         return ('', 204)
 
     # Otherwise handle the message normally
