@@ -33,6 +33,11 @@ POST_URL = '/comment'
 BASE_PORT = 10000
 SERVER_URL = PRE_URL + '5000/comment'
 
+# Message queues
+# buffer_queue = []
+
+
+
 def pad(msg):
     block_size = 16
     return msg + (block_size - len(msg) % block_size) * chr(block_size - len(msg) % block_size)
@@ -113,7 +118,7 @@ def comment():
     next_url = decrypted_json['next_url']
 
     # Logs
-    f = open(args[1]+'.log', 'w')
+    f = open(args[1]+'.log', 'a')
     f.write('\nReceived {} at {}'.format(comment, datetime.datetime.now()))
     f.write('\nSent {} to {} at {}'.format(decrypted_json, next_url, datetime.datetime.now()))
     f.close()
@@ -130,12 +135,9 @@ def getkeys():
     return {'url': 'http://' + HOST + ':' + str(PORT) + '/comment', 'key': public_key}
 
 if (__name__ == "__main__"):
-    noise_scheduler = APScheduler()
-    noise_scheduler.add_job(func=generate_noise, args=[], trigger='interval', id='noise', seconds=0.5)
-    noise_scheduler.start()
+    # noise_scheduler = APScheduler()
+    # noise_scheduler.add_job(func=generate_noise, args=[], trigger='interval', id='noise', seconds=0.5)
+    # noise_scheduler.start()
     app.run(host=HOST, debug=DEBUG, port=PORT) # ssl_context="adhoc" to add TLS
-
-    for i in range(5):
-        print('working')
 
 

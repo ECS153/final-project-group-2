@@ -10,7 +10,9 @@ fi
 
 for (( i = 0; i < $1; i++ )); do
   echo "Creating node#" $i
-  gnome-terminal -- python3 node.py $i $2 $1
+  osascript -e 'tell application "Terminal" to activate' \
+    -e 'tell application "System Events" to keystroke "t" using {command down}' \
+    -e "tell application \"Terminal\" to do script \"python3.6 node.py '$i' '$2' '$1'\" in front window"
 done
 
-python3 ./server.py $2 $1
+python3.6 ./server.py $2 $1
