@@ -12,6 +12,8 @@ import random
 import os
 import string
 import datetime
+import time
+import multiprocessing
 
 app = Flask(__name__)
 
@@ -34,9 +36,8 @@ BASE_PORT = 10000
 SERVER_URL = PRE_URL + '5000/comment'
 
 # Message queues
-# buffer_queue = []
-
-
+buffer_queue = list()
+outbound_queue = list()
 
 def pad(msg):
     block_size = 16
@@ -107,6 +108,9 @@ def comment():
     #if (type(comment) == type("")):
         #comment = json.loads(comment)
 
+    # Putting received message into buffer queue and wati to be process
+    buffer_queue.append(comment)
+
     # decrypt the AES symmetric key using RSA
     aes_key = decrypt_rsa(comment['key']).encode('utf-8')
 
@@ -119,9 +123,13 @@ def comment():
 
     # Logs
     f = open(args[1]+'.log', 'a')
-    f.write('\nReceived {} at {}'.format(comment, datetime.datetime.now()))
+    f.write('\nReceived message at {}'.format(request.remote_addr, datetime.datetime.now()))
     f.write('\nSent {} to {} at {}'.format(decrypted_json, next_url, datetime.datetime.now()))
     f.close()
+
+    # Random delay 1-7ms
+    delay = random.randint(1,7)
+    time.sleep(delay/1000)
 
     res = requests.post(next_url, json=decrypted_json)
     return ('', 204)
