@@ -94,15 +94,15 @@ def generate_noise():
 
     jsonMsg = {'next_url': SERVER_URL, 'is_real': False, 'content': message}
 
-    # for index in node_indices:
-    #     encrypted_message, aes_key = encrypt_aes(json.dumps(jsonMsg))
-    #     encrypted_key = encrypt_rsa(index, aes_key)
-    #     next_url = PRE_URL + str(BASE_PORT + index) + POST_URL
-    #     jsonMsg = {'next_url': next_url, 'content': encrypted_message, 'key': encrypted_key}
+    for index in node_indices:
+        encrypted_message, aes_key = encrypt_aes(json.dumps(jsonMsg))
+        encrypted_key = encrypt_rsa(index, aes_key)
+        next_url = PRE_URL + str(BASE_PORT + index) + POST_URL
+        jsonMsg = {'next_url': next_url, 'content': encrypted_message, 'key': encrypted_key}
 
-    # res = requests.post(jsonMsg.get('next_url'), json=jsonMsg)
+    res = requests.post(jsonMsg.get('next_url'), json=jsonMsg)
 
-    # json_str = json.dumps(jsonMsg)
+    json_str = json.dumps(jsonMsg)
 
     return jsonMsg
 
