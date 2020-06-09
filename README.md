@@ -15,6 +15,7 @@ The main files are shown below. There are some extra test files and setup script
 │   │   ├── blog.html	// Client Web Page
 │   │   └── layout.html	// Client Web Page (Used by blog.html)
 │   ├── database.db
+│   ├── info.md         // Some information on how to run the mixnet
 │   ├── node.py		// Mixnet Node
 │   ├── server.py	// Main Server
 │   └── startNodes.sh	// Script to Run Mixnet and Server
