@@ -11,3 +11,7 @@ author: Anthony
 ## Communication protocol 
 author: Ethan  
 [Link to doc](https://docs.google.com/document/d/19onjzhucERwFjXTuXm8a50Hb7GHRIj3y9smZuJ6jJjg/edit?usp=sharing)
+
+## Encryption Scheme
+author: Ethan, Scott
+[Link to doc](https://docs.google.com/document/d/1mDXn2UcOVZExc8o7EQgPW4mrHyTSyr1963jwAdSnAbk/edit?usp=sharing)]
